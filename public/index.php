@@ -1,14 +1,20 @@
 <?php
-require_once __DIR__ . '/../src/auth.php';
+require __DIR__ . '/../src/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     if (login($password)) {
-        header('Location: dashboard.php'); // admin vai direto pro dashboard
+        header('Location: dashboard.php');
         exit;
     } else {
         $error = "Incorrect password!";
     }
+}
+
+if(isset($_GET['logout'])) {
+    logout();
+    header('Location: index.php');
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -20,13 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <h2>Admin Login</h2>
-<?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
+<?php if(isset($error)) echo "<p class='error'>$error</p>"; ?>
 <form method="POST">
     <input type="password" name="password" placeholder="Admin Password" required>
     <button type="submit">Login</button>
 </form>
-
-<!-- Botão para usuários que não são admin -->
-<p>Not an admin? <a href="form.php">Go to Staff Application Form</a></p>
+<p><a href="form.php">I'm not admin</a></p>
 </body>
 </html>

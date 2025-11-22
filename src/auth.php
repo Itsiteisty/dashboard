@@ -1,48 +1,20 @@
 <?php
-// auth.php
 session_start();
 
-/**
- * Login do admin
- * @param string $password
- * @return bool
- */
-function login(string $password): bool {
-    // Pegando senha do admin do ENV (Render)
-    $adminPassword = getenv('ADMIN_PASSWORD');
+define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'admin123');
 
-    if ($password === $adminPassword) {
-        $_SESSION['logged_in'] = true;
-        $_SESSION['login_time'] = time(); // Pode ser útil para expiração
+function login($password) {
+    if($password === ADMIN_PASSWORD) {
+        $_SESSION['admin'] = true;
         return true;
     }
-
     return false;
 }
 
-/**
- * Logout do admin
- */
-function logout(): void {
-    unset($_SESSION['logged_in']);
-    unset($_SESSION['login_time']);
-    session_destroy();
+function logout() {
+    unset($_SESSION['admin']);
 }
 
-/**
- * Verifica se o admin está logado
- * @return bool
- */
-function isLoggedIn(): bool {
-    return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
-}
-
-/**
- * Protege páginas que só admin pode acessar
- */
-function requireAdmin(): void {
-    if (!isLoggedIn()) {
-        header('Location: index.php'); // Redireciona para login
-        exit;
-    }
+function isLoggedIn() {
+    return !empty($_SESSION['admin']);
 }

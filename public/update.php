@@ -1,27 +1,31 @@
 <?php
-require __DIR__ . '/../src/auth.php';
-requireAdmin(); // Somente admins
 require __DIR__ . '/../src/db.php';
+require __DIR__ . '/../src/auth.php';
 
-use MongoDB\BSON\ObjectId;
+header('Content-Type: application/json');
 
-// Pega parâmetros da URL
-$id = $_GET['id'] ?? null;
-$action = $_GET['action'] ?? null;
-
-// Verifica se são válidos
-if ($id && in_array($action, ['approve', 'reject'])) {
-    // Atualiza status no MongoDB
-    $collection->updateOne(
-        ['_id' => new ObjectId($id)],
-        ['$set' => ['status' => $action === 'approve' ? 'approved' : 'rejected']]
-    );
-
-    // Redireciona para dashboard com mensagem
-    header('Location: dashboard.php?msg=Updated+successfully');
-    exit; // MUITO IMPORTANTE para evitar warnings de header
+if(!isLoggedIn()) {
+    echo json_encode(['success'=>false,'message'=>'Unauthorized']);
+    exit;
 }
 
-// Se parâmetros inválidos
-header('Location: dashboard.php?msg=Invalid+request');
-exit;
+$data = json_decode(file_get_contents('php://input'), true);
+$id = $data['id'] ?? null;
+$action = $data['action'] ?? null;
+
+if(!$id || !in_array($action,['approve','reject'])){
+    echo json_encode(['success'=>false,'message'=>'Invalid data']);
+    exit;
+}
+
+$status = $action==='approve'?'approved':'rejected';
+
+try{
+    $db->staff_forms->updateOne(
+        ['_id'=>new MongoDB\BSON\ObjectId($id)],
+        ['$set'=>['status'=>$status]]
+    );
+    echo json_encode(['success'=>true]);
+}catch(Exception $e){
+    echo json_encode(['success'=>false,'message'=>$e->getMessage()]);
+}

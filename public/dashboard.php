@@ -1,68 +1,60 @@
 <?php
 require __DIR__ . '/../src/auth.php';
-requireAdmin(); // Somente admins
-require __DIR__ . '/../src/db.php'; // Conexão MongoDB
+require __DIR__ . '/../src/db.php';
 
-use MongoDB\BSON\ObjectId;
-
-// Pega todos os candidatos ordenados do mais recente
-$applicantsCursor = $collection->find([], ['sort' => ['_id' => -1]]);
-$applicants = iterator_to_array($applicantsCursor); // Corrige erro de cursor
-
-// Inicializa contadores
-$total = $approved = $rejected = $pending = 0;
-
-foreach ($applicants as $a) {
-    $status = $a['status'] ?? 'pending';
-    $total++;
-    if ($status === 'approved') $approved++;
-    elseif ($status === 'rejected') $rejected++;
-    else $pending++;
+if(!isLoggedIn()) {
+    header('Location: index.php');
+    exit;
 }
+
+$applicants = $db->staff_forms->find([], ['sort'=>['created_at'=>-1]]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Discord Staff Admin Panel</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php include 'header.php'; ?>
-
 <h1>Discord Staff Admin Panel</h1>
+<p><a href="index.php?logout=1">Logout</a></p>
 
-<div class="stats">
-    <div>Total Applicants: <?php echo $total; ?></div>
-    <div>Approved: <?php echo $approved; ?></div>
-    <div>Rejected: <?php echo $rejected; ?></div>
-    <div>Pending: <?php echo $pending; ?></div>
+<div class="applicants-container">
+<?php foreach($applicants as $app): 
+    $id = (string)$app['_id'];
+?>
+<div class="applicant-card" id="applicant-<?= $id ?>">
+    <p><strong>Discord ID:</strong> <?= htmlspecialchars($app['discord_id']) ?></p>
+    <p><strong>Username:</strong> <?= htmlspecialchars($app['username']) ?></p>
+    <div class="actions">
+        <button class="btn btn-approve" onclick="ajaxAction('approve', '<?= $id ?>')">Approve</button>
+        <button class="btn btn-reject" onclick="ajaxAction('reject', '<?= $id ?>')">Reject</button>
+    </div>
+</div>
+<?php endforeach; ?>
 </div>
 
-<?php if (isset($_GET['msg'])): ?>
-    <p class="msg"><?php echo htmlspecialchars($_GET['msg']); ?></p>
-<?php endif; ?>
+<script>
+function ajaxAction(action, id){
+    if(!confirm(`Are you sure you want to ${action.toUpperCase()} this applicant?`)) return;
 
-<div class="applicants">
-    <?php foreach ($applicants as $a): ?>
-        <div class="applicant-card">
-            <p><strong>Discord ID:</strong> <?php echo $a['discord_id'] ?? 'N/A'; ?></p>
-            <p><strong>Username:</strong> <?php echo $a['username'] ?? 'N/A'; ?></p>
-
-            <?php for ($i = 1; $i <= 25; $i++): ?>
-                <p><strong>Question <?php echo $i; ?>:</strong> <?php echo $a['q'.$i] ?? ''; ?></p>
-            <?php endfor; ?>
-
-            <p><strong>Status:</strong> <?php echo ucfirst($a['status'] ?? 'pending'); ?></p>
-
-            <div class="actions">
-                <a href="update.php?id=<?php echo $a['_id']; ?>&action=approve" class="btn btn-approve">Approve</a>
-                <a href="update.php?id=<?php echo $a['_id']; ?>&action=reject" class="btn btn-reject">Reject</a>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
-
-<?php include 'footer.php'; ?>
+    fetch('update.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({id:id,action:action})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.success){
+            const card=document.getElementById('applicant-'+id);
+            card.classList.add('removed');
+            setTimeout(()=>card.remove(),400);
+        }else{
+            alert('Error: '+data.message);
+        }
+    }).catch(err=>alert('Request failed: '+err));
+}
+</script>
 </body>
 </html>
