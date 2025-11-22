@@ -1,14 +1,22 @@
 <?php
 require __DIR__ . '/../src/auth.php';
-require __DIR__ . '/../src/db.php';
+requireAdmin(); // Somente admins podem acessar
+require __DIR__ . '/../src/db.php'; // Conexão com MongoDB
 
-if (!isLoggedIn()) {
-    header('Location: index.php');
-    exit;
+use MongoDB\BSON\ObjectId;
+
+// Busca todos os candidatos
+$applicants = $collection->find([], ['sort' => ['_id' => -1]]);
+
+// Contadores
+$total = $approved = $rejected = $pending = 0;
+foreach ($applicants as $a) {
+    $total++;
+    $status = $a['status'] ?? 'pending';
+    if ($status === 'approved') $approved++;
+    elseif ($status === 'rejected') $rejected++;
+    else $pending++;
 }
-
-// Busca todos os formulários no MongoDB
-$forms = $collection->find([], ['sort' => ['submitted_at' => -1]]);
 ?>
 
 <!DOCTYPE html>
@@ -21,45 +29,43 @@ $forms = $collection->find([], ['sort' => ['submitted_at' => -1]]);
 <body>
 <?php include 'header.php'; ?>
 
-<h2>Discord Staff Dashboard</h2>
+<h1>Discord Staff Admin Panel</h1>
+<h2>Dashboard</h2>
 
-<!-- Painel de indicadores -->
-<div class="cards">
-    <div class="card">
-        <h3>Total Applicants</h3>
-        <p><?= $collection->countDocuments(); ?></p>
-    </div>
-    <div class="card approved">
-        <h3>Approved</h3>
-        <p><?= $collection->countDocuments(['status' => 'approved']); ?></p>
-    </div>
-    <div class="card rejected">
-        <h3>Rejected</h3>
-        <p><?= $collection->countDocuments(['status' => 'rejected']); ?></p>
-    </div>
-    <div class="card pending">
-        <h3>Pending</h3>
-        <p><?= $collection->countDocuments(['status' => 'pending']); ?></p>
-    </div>
+<div class="stats">
+    <div>Total Applicants: <?php echo $total; ?></div>
+    <div>Approved: <?php echo $approved; ?></div>
+    <div>Rejected: <?php echo $rejected; ?></div>
+    <div>Pending: <?php echo $pending; ?></div>
 </div>
 
-<!-- Lista de formulários -->
-<div class="form-list">
-    <?php foreach ($forms as $form): ?>
-    <div class="form-entry <?= $form['status']; ?>">
-        <p><strong>Discord ID:</strong> <?= $form['discord_id']; ?></p>
-        <p><strong>Username:</strong> <?= $form['username']; ?></p>
-        <?php for ($i=1; $i<=25; $i++): ?>
-            <p><strong>Question <?= $i ?>:</strong> <?= $form['q'.$i] ?? ''; ?></p>
+<hr>
+
+<?php foreach ($applicants as $app): ?>
+    <?php
+    $discord_id = $app['discord_id'] ?? 'N/A';
+    $username   = $app['username'] ?? 'N/A';
+    $status     = ucfirst($app['status'] ?? 'pending');
+    $questions  = $app['questions'] ?? array_fill(0, 25, 'No answer');
+    $id         = (string) $app['_id'];
+    ?>
+    <div class="applicant-card">
+        <strong>Discord ID:</strong> <?php echo htmlspecialchars($discord_id); ?><br>
+        <strong>Username:</strong> <?php echo htmlspecialchars($username); ?><br>
+        <?php for ($i = 0; $i < 25; $i++): ?>
+            <strong>Question <?php echo $i + 1; ?>:</strong> <?php echo htmlspecialchars($questions[$i]); ?><br>
         <?php endfor; ?>
-        <p><strong>Status:</strong> <span class="status <?= $form['status']; ?>"><?= ucfirst($form['status']); ?></span></p>
-        <div class="buttons">
-            <a href="update.php?id=<?= $form['_id'] ?>&action=approve" class="btn approve">Approve</a>
-            <a href="update.php?id=<?= $form['_id'] ?>&action=reject" class="btn reject">Reject</a>
-        </div>
+        <strong>Status:</strong> <?php echo htmlspecialchars($status); ?><br>
+
+        <?php if ($status === 'pending'): ?>
+            <a href="update.php?id=<?php echo $id; ?>&action=approve" class="btn-approve">Approve</a>
+            <a href="update.php?id=<?php echo $id; ?>&action=reject" class="btn-reject">Reject</a>
+        <?php else: ?>
+            <span class="status-label"><?php echo $status; ?></span>
+        <?php endif; ?>
     </div>
-    <?php endforeach; ?>
-</div>
+    <hr>
+<?php endforeach; ?>
 
 <?php include 'footer.php'; ?>
 </body>
