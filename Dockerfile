@@ -2,6 +2,7 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
+# Instala dependências + MongoDB
 RUN apt-get update && apt-get install -y \
         git \
         unzip \
@@ -14,20 +15,23 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Copia projeto
 COPY composer.json /var/www/html/
 COPY src/ /var/www/html/src/
 COPY public/ /var/www/html/
 
-# Composer install ignorando ext-mongodb temporariamente
+# Composer install ignorando ext-mongodb (apenas build)
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-mongodb
 
+# Apache index
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
 
+# Permissões
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
 EXPOSE 80
-
 CMD ["apache2-foreground"]

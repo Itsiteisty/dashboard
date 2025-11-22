@@ -2,12 +2,12 @@
 require __DIR__ . '/../src/auth.php';
 require __DIR__ . '/../src/db.php';
 
-if (!isAdmin()) {
+if (!checkAuth()) {
     header('Location: index.php');
     exit;
 }
 
-$applications = $collection->find([], ['sort' => ['submitted_at' => -1]]);
+$forms = $collection->find();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,27 +17,25 @@ $applications = $collection->find([], ['sort' => ['submitted_at' => -1]]);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php include 'header.php'; ?>
+<?php include __DIR__ . '/header.php'; ?>
 
 <h2>Dashboard</h2>
-
+<a href="index.php?logout=1">Logout</a>
 <table>
     <tr>
-        <th>Submitted At</th>
-        <?php for ($i=1;$i<=25;$i++): ?>
+        <?php for ($i=1; $i<=25; $i++): ?>
             <th>Q<?= $i ?></th>
         <?php endfor; ?>
     </tr>
-    <?php foreach ($applications as $app): ?>
-        <tr>
-            <td><?= $app['submitted_at']->toDateTime()->format('Y-m-d H:i:s') ?></td>
-            <?php for ($i=1;$i<=25;$i++): ?>
-                <td><?= htmlspecialchars($app["q$i"] ?? '') ?></td>
-            <?php endfor; ?>
-        </tr>
+    <?php foreach ($forms as $form): ?>
+    <tr>
+        <?php for ($i=1; $i<=25; $i++): ?>
+            <td><?= htmlspecialchars($form["q$i"]) ?></td>
+        <?php endfor; ?>
+    </tr>
     <?php endforeach; ?>
 </table>
 
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/footer.php'; ?>
 </body>
 </html>

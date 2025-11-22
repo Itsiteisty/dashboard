@@ -1,4 +1,4 @@
-</div> <!-- fecha container -->
 <footer>
-    &copy; <?= date("Y") ?> Discord Staff Panel
+    <hr>
+    <p>&copy; <?= date('Y') ?> Discord Staff Form</p>
 </footer>

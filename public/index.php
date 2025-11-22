@@ -25,7 +25,7 @@ if (isset($_GET['logout'])) {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php include 'header.php'; ?>
+<?php include __DIR__ . '/header.php'; ?>
 
 <h2>Admin Login</h2>
 <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
@@ -34,6 +34,6 @@ if (isset($_GET['logout'])) {
     <button type="submit">Login</button>
 </form>
 
-<?php include 'footer.php'; ?>
+<?php include __DIR__ . '/footer.php'; ?>
 </body>
 </html>
