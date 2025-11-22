@@ -1,5 +1,6 @@
 <?php
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/db.php';   // Ajuste o caminho conforme sua estrutura
+require_once __DIR__ . '/../src/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [

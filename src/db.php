@@ -1,14 +1,17 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
-
 use MongoDB\Client;
 
-// Conexão com MongoDB usando variável de ambiente
 $mongoUri = getenv('MONGO_URI');
-$client = new Client($mongoUri);
+$mongoDbName = getenv('MONGO_DB_NAME');
 
-// Seleciona o database e a collection
-$collection = $client->dashusers->users;
+if (!$mongoUri || !$mongoDbName) {
+    die("Mongo URI or DB Name not set in environment variables.");
+}
 
-// Não use echo, var_dump ou espaços antes do <?php
-// Não feche o arquivo com ?>
+try {
+    $client = new Client($mongoUri);
+    $db = $client->$mongoDbName;
+} catch (Exception $e) {
+    die("Failed to connect to MongoDB: " . $e->getMessage());
+}

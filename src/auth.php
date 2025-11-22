@@ -1,10 +1,9 @@
 <?php
 session_start();
 
-define('ADMIN_PASSWORD', getenv('ADMIN_PASSWORD') ?: 'admin123');
-
 function login($password) {
-    if($password === ADMIN_PASSWORD) {
+    $adminPass = getenv('ADMIN_PASSWORD'); // Defina no Render
+    if ($password === $adminPass) {
         $_SESSION['admin'] = true;
         return true;
     }
@@ -12,9 +11,9 @@ function login($password) {
 }
 
 function logout() {
-    unset($_SESSION['admin']);
+    session_destroy();
 }
 
 function isLoggedIn() {
-    return !empty($_SESSION['admin']);
+    return isset($_SESSION['admin']) && $_SESSION['admin'] === true;
 }
