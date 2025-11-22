@@ -1,14 +1,10 @@
 <?php
 session_start();
 
-function isAdmin() {
-    return isset($_SESSION['admin_logged']) && $_SESSION['admin_logged'] === true;
-}
-
 function login($password) {
-    $adminPassword = getenv('ADMIN_PASSWORD'); // Defina no Render
+    $adminPassword = getenv('ADMIN_PASSWORD');
     if ($password === $adminPassword) {
-        $_SESSION['admin_logged'] = true;
+        $_SESSION['admin'] = true;
         return true;
     }
     return false;
@@ -17,4 +13,7 @@ function login($password) {
 function logout() {
     session_destroy();
 }
-?>
+
+function isAdmin() {
+    return isset($_SESSION['admin']) && $_SESSION['admin'] === true;
+}

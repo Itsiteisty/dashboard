@@ -1,0 +1,124 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f5f6fa;
+    color: #2f3640;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #273c75;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav {
+    background-color: #40739e;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dcdde1;
+    border-radius: 5px;
+    width: 100%;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #273c75;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #192a56;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table th,
+table td {
+    border: 1px solid #dcdde1;
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: #718093;
+    color: white;
+}
+
+p.success {
+    color: green;
+}
+
+p.error {
+    color: red;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    color: #7f8fa6;
+    font-size: 14px;
+}

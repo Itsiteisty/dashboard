@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/src/auth.php';
+require __DIR__ . '/../src/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
@@ -22,13 +22,18 @@ if (isset($_GET['logout'])) {
 <head>
     <meta charset="UTF-8">
     <title>Admin Login</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Admin Login</h1>
-    <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form method="POST">
-        <input type="password" name="password" placeholder="Admin Password" required>
-        <button type="submit">Login</button>
-    </form>
+<?php include 'header.php'; ?>
+
+<h2>Admin Login</h2>
+<?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
+<form method="POST">
+    <input type="password" name="password" placeholder="Admin Password" required>
+    <button type="submit">Login</button>
+</form>
+
+<?php include 'footer.php'; ?>
 </body>
 </html>

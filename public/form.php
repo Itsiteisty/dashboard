@@ -1,39 +1,41 @@
 <?php
-require __DIR__ . '/src/auth.php';
+require __DIR__ . '/../src/auth.php';
+require __DIR__ . '/../src/db.php';
+
 if (!isAdmin()) {
     header('Location: index.php');
     exit;
 }
-require __DIR__ . '/src/db.php';
 
-// 25 Discord Staff Questions
 $questions = [
     "Discord Tag (Username#1234)",
     "Why do you want to become staff?",
-    "Previous moderation experience",
-    "Hours available per week",
-    "Knowledge of moderation tools",
-    "Have you ever been banned from a server?",
-    "How do you handle conflicts?",
+    "How many hours per week can you dedicate?",
+    "Have you been a staff member before?",
+    "What previous experience do you have?",
+    "How would you handle a disruptive member?",
+    "How do you react under stress?",
     "Do you understand Discord rules?",
-    "How would you deal with spam or raids?",
-    "How do you handle reports from users?",
-    "Have you been staff before?",
-    "Have you worked with bots before?",
-    "How do you organize tasks?",
-    "How do you communicate with a team?",
-    "Are you open to feedback and criticism?",
-    "Are you active in the server?",
-    "Are you aware of staff responsibilities?",
-    "Have you reported technical problems before?",
-    "How do you deal with trolls?",
-    "How do you stay calm under pressure?",
-    "How do you manage multiple tasks at once?",
-    "Do you understand the code of conduct?",
-    "Are you available for emergencies?",
-    "How do you react to negative feedback?",
-    "Additional comments or notes"
+    "How familiar are you with moderation bots?",
+    "Can you enforce rules fairly?",
+    "Have you read our server guidelines?",
+    "Do you know how to use logs effectively?",
+    "What timezone are you in?",
+    "Can you attend voice chats if needed?",
+    "How would you deal with conflict between staff?",
+    "Are you comfortable giving warnings?",
+    "Do you know how to mute/ban members?",
+    "Have you ever handled a difficult situation?",
+    "Why should we select you?",
+    "What makes you trustworthy?",
+    "Do you have any suggestions to improve the server?",
+    "Can you handle confidential information?",
+    "How do you motivate members?",
+    "Are you willing to learn new tools?",
+    "Any additional comments?"
 ];
+
+$success = $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = [];
@@ -55,19 +57,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Discord Staff Application Form</title>
+    <title>Staff Application Form</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Discord Staff Application Form</h1>
-    <?php if (isset($success)) echo "<p style='color:green;'>$success</p>"; ?>
-    <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
-    <form method="POST">
-        <?php foreach ($questions as $i => $q): ?>
-            <label for="q<?= $i+1 ?>"><?= $q ?>:</label><br>
-            <input type="text" id="q<?= $i+1 ?>" name="q<?= $i+1 ?>" required><br><br>
-        <?php endforeach; ?>
-        <button type="submit">Submit</button>
-    </form>
-    <a href="dashboard.php">View Dashboard</a>
+<?php include 'header.php'; ?>
+
+<h2>Staff Application</h2>
+<?php if ($success) echo "<p class='success'>$success</p>"; ?>
+<?php if ($error) echo "<p class='error'>$error</p>"; ?>
+
+<form method="POST">
+    <?php foreach ($questions as $i => $q): ?>
+        <label><?= htmlspecialchars($q) ?></label>
+        <input type="text" name="q<?= $i+1 ?>" required>
+    <?php endforeach; ?>
+    <button type="submit">Submit</button>
+</form>
+
+<?php include 'footer.php'; ?>
 </body>
 </html>
