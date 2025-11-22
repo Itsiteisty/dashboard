@@ -4,7 +4,7 @@ if (!isAdmin()) {
     header('Location: index.php');
     exit;
 }
-require '../src/db.php';
+require '/src/db.php';
 
 $submissions = $collection->find([], ['sort' => ['submitted_at' => -1]]);
 ?>
