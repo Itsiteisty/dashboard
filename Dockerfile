@@ -1,20 +1,24 @@
-# Use official PHP 8.2 Apache image
+# Base image: PHP 8.2 + Apache
 FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies and MongoDB PHP extension
+# Install system dependencies for building MongoDB extension
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libssl-dev \
     libcurl4-openssl-dev \
     pkg-config \
+    cmake \
+    build-essential \
+    libz-dev \
     && pecl install mongodb \
     && docker-php-ext-enable mongodb \
     && a2enmod rewrite \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy composer files first to install dependencies
 COPY composer.json composer.lock /var/www/html/
