@@ -1,10 +1,10 @@
-# Use official PHP Apache image
+# Use official PHP 8.2 Apache image
 FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies and MongoDB PHP extension
+# Install system dependencies and MongoDB extension
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -15,17 +15,18 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable mongodb \
     && apt-get clean
 
-# Enable Apache mod_rewrite (optional, useful for clean URLs)
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
 # Copy project files
 COPY . /var/www/html
 
-# Install Composer
+# Copy Composer from official Composer image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# --ignore-platform-reqs evita erros de versão PHP/extensão
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
