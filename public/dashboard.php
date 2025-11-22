@@ -1,41 +1,31 @@
 <?php
-require __DIR__ . '/../src/auth.php';
-require __DIR__ . '/../src/db.php';
+require_once __DIR__ . '/../src/auth.php';
+require_once __DIR__ . '/../src/db.php';
 
-if (!checkAuth()) {
+if (!isLoggedIn()) { // verifica se admin está logado
     header('Location: index.php');
     exit;
 }
 
-$forms = $collection->find();
+$forms = $collection->find([], ['sort' => ['_id' => -1]]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<?php include __DIR__ . '/header.php'; ?>
-
-<h2>Dashboard</h2>
-<a href="index.php?logout=1">Logout</a>
-<table>
-    <tr>
-        <?php for ($i=1; $i<=25; $i++): ?>
-            <th>Q<?= $i ?></th>
-        <?php endfor; ?>
-    </tr>
-    <?php foreach ($forms as $form): ?>
-    <tr>
-        <?php for ($i=1; $i<=25; $i++): ?>
-            <td><?= htmlspecialchars($form["q$i"]) ?></td>
-        <?php endfor; ?>
-    </tr>
-    <?php endforeach; ?>
-</table>
-
-<?php include __DIR__ . '/footer.php'; ?>
+<h2>Discord Staff Admin Panel</h2>
+<p><a href="index.php?logout=1">Logout</a></p>
+<?php foreach ($forms as $form): ?>
+<div class="form-entry">
+    <?php for ($i = 1; $i <= 25; $i++): ?>
+        <p><strong>Q<?= $i ?>:</strong> <?= htmlspecialchars($form["question_$i"]) ?></p>
+    <?php endfor; ?>
+    <hr>
+</div>
+<?php endforeach; ?>
 </body>
 </html>
