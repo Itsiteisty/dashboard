@@ -1,11 +1,14 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/auth.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$mongoUri = getenv('MONGO_URI') ?: 'mongodb://localhost:27017';
-$client = new MongoDB\Client($mongoUri);
+use MongoDB\Client;
 
-$db = $client->selectDatabase('dashusers');
-$collection = $db->users;
+// Conexão com MongoDB usando variável de ambiente
+$mongoUri = getenv('MONGO_URI');
+$client = new Client($mongoUri);
 
-var_dump($collection->countDocuments()); // teste rápido
+// Seleciona o database e a collection
+$collection = $client->dashusers->users;
+
+// Não use echo, var_dump ou espaços antes do <?php
+// Não feche o arquivo com ?>
