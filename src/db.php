@@ -1,17 +1,13 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
+
+use Dotenv\Dotenv;
 use MongoDB\Client;
 
-$mongoUri = getenv('MONGO_URI');
-$mongoDbName = getenv('MONGO_DB_NAME');
+// Carrega variáveis de ambiente
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
-if (!$mongoUri || !$mongoDbName) {
-    die("Mongo URI or DB Name not set in environment variables.");
-}
-
-try {
-    $client = new Client($mongoUri);
-    $db = $client->$mongoDbName;
-} catch (Exception $e) {
-    die("Failed to connect to MongoDB: " . $e->getMessage());
-}
+// Conexão com MongoDB
+$client = new Client($_ENV['MONGO_URI']);
+$collection = $client->{$_ENV['MONGO_DB']}->{$_ENV['MONGO_COLLECTION']};
