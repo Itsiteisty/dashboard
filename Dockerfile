@@ -1,9 +1,7 @@
-# Base image: PHP 8.2 + Apache
 FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# Instala dependências do sistema e extensão MongoDB
 RUN apt-get update && apt-get install -y \
         git \
         unzip \
@@ -16,21 +14,17 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copia Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copia arquivos do projeto (sem composer.lock)
 COPY composer.json /var/www/html/
 COPY src/ /var/www/html/src/
 COPY public/ /var/www/html/
 
-# Instala dependências PHP
-RUN composer install --no-dev --optimize-autoloader
+# Composer install ignorando requisitos da plataforma
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-mongodb
 
-# Configura Apache para index.php
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
 
-# Permissões
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
