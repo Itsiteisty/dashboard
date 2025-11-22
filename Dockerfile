@@ -19,15 +19,15 @@ RUN apt-get update && apt-get install -y \
 # Copia Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copia arquivos do projeto
-COPY composer.json composer.lock /var/www/html/
+# Copia arquivos do projeto (sem composer.lock)
+COPY composer.json /var/www/html/
 COPY src/ /var/www/html/src/
 COPY public/ /var/www/html/
 
 # Instala dependências PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Configura o Apache para index.php
+# Configura Apache para index.php
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
 
 # Permissões
