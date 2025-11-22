@@ -20,7 +20,7 @@ COPY composer.json /var/www/html/
 COPY src/ /var/www/html/src/
 COPY public/ /var/www/html/
 
-# Composer install ignorando requisitos da plataforma
+# Composer install ignorando ext-mongodb temporariamente
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-mongodb
 
 RUN echo "DirectoryIndex index.php index.html" >> /etc/apache2/apache2.conf
