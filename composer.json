@@ -1,0 +1,10 @@
+{
+    "require": {
+        "mongodb/mongodb": "^1.13"
+    },
+    "config": {
+        "platform": {
+            "php": "7.2.34"
+        }
+    }
+}
