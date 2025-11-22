@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
 RUN a2enmod rewrite
 
 # Copy project files
-COPY . /var/www/html
+COPY public/ /var/www/html/
 
 # Copy Composer from official Composer image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
