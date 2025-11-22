@@ -1,5 +1,5 @@
 <?php
-require '../src/auth.php';
+require __DIR__ . '/src/auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';

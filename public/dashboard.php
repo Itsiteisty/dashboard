@@ -1,5 +1,5 @@
 <?php
-require '../src/auth.php';
+require __DIR__ . '/src/auth.php';
 if (!isAdmin()) {
     header('Location: index.php');
     exit;
