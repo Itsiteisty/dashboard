@@ -1,223 +1,185 @@
-/* ===========================
-   Global Reset e Estilo Base
-=========================== */
+/* Reset básico */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 body {
-    background: #f0f4f8;
-    color: #333;
-    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2c2c50);
+    color: #fff;
+    min-height: 100vh;
+}
+
+/* Cabeçalho */
+header {
+    background: #3a3a5c;
     padding: 20px;
-}
-
-a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* ===========================
-   Cabeçalho / H1 / H2
-=========================== */
-h1, h2 {
-    color: #222;
-    margin-bottom: 15px;
-}
-
-h1 {
+    text-align: center;
     font-size: 2rem;
-    margin-bottom: 25px;
+    font-weight: bold;
+    letter-spacing: 1px;
 }
 
-/* ===========================
-   Formulários
-=========================== */
-form {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    max-width: 700px;
+/* Container principal */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* Estatísticas do dashboard */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
     margin-bottom: 30px;
+    gap: 15px;
 }
 
-input[type="text"],
-input[type="password"],
-textarea {
+.stats div {
+    background: #444475;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    transition: transform 0.2s;
+}
+
+.stats div:hover {
+    transform: scale(1.05);
+}
+
+/* Cards de candidatos */
+.applicants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    background: #2a2a45;
+    padding: 20px;
+    border-radius: 20px;
+    width: 300px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+}
+
+.card p {
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+/* Botões de ação */
+.card button {
+    padding: 10px 15px;
+    margin: 5px 5px 0 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.card button:hover {
+    opacity: 0.85;
+}
+
+/* Cores dos botões */
+.card button.approve {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.card button.reject {
+    background-color: #f44336;
+    color: white;
+}
+
+.card button.view-form {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* Formulário */
+form {
+    background: #2a2a45;
+    padding: 25px;
+    border-radius: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+}
+
+form input, form textarea, form select {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0,123,255,0.5);
-}
-
-textarea {
-    min-height: 60px;
-    resize: vertical;
-}
-
-/* ===========================
-   Botões
-=========================== */
-button, input[type="submit"] {
-    padding: 12px 25px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    outline: none;
+    font-size: 1rem;
+}
+
+form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.1rem;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.2s;
 }
 
-button:hover, input[type="submit"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+form button:hover {
+    opacity: 0.85;
 }
 
-button:active, input[type="submit"]:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-approve {
-    background: #28a745;
-    color: #fff;
-    margin-right: 10px;
-}
-
-.btn-approve:hover {
-    background: #218838;
-}
-
-.btn-reject {
-    background: #dc3545;
-    color: #fff;
-}
-
-.btn-reject:hover {
-    background: #c82333;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: #fff;
-}
-
-.btn-secondary:hover {
-    background: #5a6268;
-}
-
-/* ===========================
-   Mensagens
-=========================== */
-.success {
-    background: #d4edda;
-    color: #155724;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
+/* Mensagens de erro */
 .error {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 10px 15px;
-    border-radius: 8px;
+    background: #f44336;
+    padding: 10px;
     margin-bottom: 15px;
+    border-radius: 10px;
+    text-align: center;
 }
 
-/* ===========================
-   Dashboard / Cards
-=========================== */
-.applicants-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+/* Responsividade */
+@media(max-width: 768px) {
+    .stats {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 90%;
+    }
+
+    form {
+        width: 90%;
+    }
 }
 
-.applicant-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: all 0.4s ease;
-    position: relative;
-}
-
-.applicant-card.removed {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.4s ease;
-    height: 0;
-    margin: 0;
-    padding: 0;
-}
-
-.applicant-card p {
-    margin-bottom: 10px;
-}
-
-.actions {
-    margin-top: 10px;
-}
-
-.actions button {
-    margin-right: 10px;
-}
-
-/* ===========================
-   Header / Footer
-=========================== */
-header, footer {
-    background: #007bff;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
+/* Footer */
 footer {
     text-align: center;
-    margin-top: 40px;
-}
-
-/* ===========================
-   Links / Extra
-=========================== */
-a.button-link {
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 8px;
-    background: #17a2b8;
-    color: #fff;
-    margin-top: 10px;
-}
-
-a.button-link:hover {
-    background: #138496;
-}
-
-/* ===========================
-   Responsividade
-=========================== */
-@media(max-width:768px){
-    body { padding: 15px; }
-    form { padding: 20px; }
-    .applicants-container { grid-template-columns: 1fr; }
+    padding: 15px;
+    background: #3a3a5c;
+    margin-top: 20px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    font-size: 0.9rem;
+    color: #ccc;
 }
