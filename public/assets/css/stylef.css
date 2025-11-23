@@ -1,0 +1,135 @@
+/* ===== Reset básico ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    animation: bgAnim 15s ease infinite;
+}
+
+/* ===== Fundo animado ===== */
+@keyframes bgAnim {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
+
+/* ===== Container do formulário ===== */
+.form-container {
+    background: rgba(0,0,0,0.8);
+    padding: 40px;
+    border-radius: 15px;
+    width: 650px;
+    box-shadow: 0 0 20px #00fff0, 0 0 40px #00fff0 inset;
+    border: 2px solid #00fff0;
+    animation: neonGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes neonGlow {
+    from { box-shadow: 0 0 20px #00fff0, 0 0 40px #00fff0 inset; }
+    to { box-shadow: 0 0 40px #00fff0, 0 0 80px #00fff0 inset; }
+}
+
+/* ===== Título ===== */
+h1 {
+    text-align: center;
+    color: #00fff0;
+    text-shadow: 0 0 5px #00fff0, 0 0 10px #00fff0, 0 0 20px #00fff0;
+    margin-bottom: 25px;
+    animation: titleGlow 1.5s infinite alternate;
+}
+
+@keyframes titleGlow {
+    from { text-shadow: 0 0 5px #00fff0, 0 0 10px #00fff0; }
+    to { text-shadow: 0 0 15px #00fff0, 0 0 25px #00fff0; }
+}
+
+/* ===== Labels ===== */
+label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #00fff0;
+}
+
+/* ===== Inputs e Textareas ===== */
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: none;
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #00fff0;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px #00fff0, 0 0 20px #00fff0 inset;
+}
+
+/* ===== Button ===== */
+button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(45deg, #00fff0, #00a0ff);
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00fff0, 0 0 20px #00a0ff inset;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00fff0, 0 0 40px #00a0ff inset;
+}
+
+/* ===== Scroll suave para textarea longo ===== */
+textarea {
+    min-height: 60px;
+    resize: vertical;
+    scrollbar-width: thin;
+    scrollbar-color: #00fff0 #1a1a1a;
+}
+
+textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: #00fff0;
+    border-radius: 4px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+/* ===== Parágrafo simples ===== */
+p {
+    text-align: center;
+    margin-top: 20px;
+    color: #00fff0;
+    text-shadow: 0 0 5px #00fff0;
+}

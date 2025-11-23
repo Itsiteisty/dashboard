@@ -1,0 +1,104 @@
+/* ===== Fundo ===== */
+body {
+    font-family: "Arial", sans-serif;
+    background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ===== Caixa Neon ===== */
+.box {
+    position: relative;
+    background: rgba(0,0,0,0.3);
+    padding: 50px 70px;
+    border-radius: 20px;
+    border: 2px solid #00f0ff;
+    text-align: center;
+    width: 380px;
+    box-shadow: 0 0 30px #00f0ff, 0 0 60px #ff00ff, 0 0 90px #ff00ff;
+    animation: glowBox 2s infinite alternate;
+}
+
+/* ===== Títulos ===== */
+h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+    color: #00f0ff;
+    text-shadow: 0 0 5px #00f0ff, 0 0 15px #ff00ff, 0 0 30px #00ffff;
+}
+
+p {
+    font-size: 17px;
+    color: #fff;
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #00ffff;
+}
+
+/* ===== Glow extra ===== */
+.glow-text {
+    margin-top: 25px;
+    font-size: 18px;
+    color: #ff00ff;
+    text-shadow:
+        0 0 5px #ff00ff,
+        0 0 10px #ff00ff,
+        0 0 20px #00f0ff,
+        0 0 30px #00f0ff,
+        0 0 40px #ff00ff;
+    animation: flicker 1.5s infinite alternate;
+}
+
+/* ===== Loader Neon ===== */
+.loader {
+    margin: 25px auto 0;
+    width: 55px;
+    height: 55px;
+    border: 6px solid rgba(0, 255, 255, 0.2);
+    border-top: 6px solid #ff00ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite, pulse 1.5s infinite alternate;
+}
+
+/* ===== Animações ===== */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 15px #ff00ff, 0 0 30px #00f0ff; }
+    100% { box-shadow: 0 0 30px #ff00ff, 0 0 60px #00f0ff; }
+}
+
+@keyframes glowBox {
+    0% { box-shadow: 0 0 30px #00f0ff, 0 0 60px #ff00ff; }
+    100% { box-shadow: 0 0 60px #00f0ff, 0 0 90px #ff00ff; }
+}
+
+@keyframes flicker {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; text-shadow: 0 0 10px #ff00ff, 0 0 20px #00f0ff; }
+    100% { opacity: 0.9; text-shadow: 0 0 15px #ff00ff, 0 0 30px #00f0ff; }
+}
+
+/* ===== Inputs e Botões (caso queira adicionar depois) ===== */
+input, button {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    text-shadow: 0 0 3px #00ffff;
+    transition: all 0.3s ease;
+}
+
+input:focus, button:hover {
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 10px #00f0ff, 0 0 20px #ff00ff;
+}

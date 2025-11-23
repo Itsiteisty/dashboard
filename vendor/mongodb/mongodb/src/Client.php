@@ -24,8 +24,6 @@ use MongoDB\BSON\PackedArray;
 use MongoDB\Builder\BuilderEncoder;
 use MongoDB\Builder\Pipeline;
 use MongoDB\Codec\Encoder;
-use MongoDB\Driver\BulkWriteCommand;
-use MongoDB\Driver\BulkWriteCommandResult;
 use MongoDB\Driver\ClientEncryption;
 use MongoDB\Driver\Exception\InvalidArgumentException as DriverInvalidArgumentException;
 use MongoDB\Driver\Exception\RuntimeException as DriverRuntimeException;
@@ -41,20 +39,22 @@ use MongoDB\Exception\UnsupportedException;
 use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 use MongoDB\Model\DatabaseInfo;
-use MongoDB\Operation\ClientBulkWriteCommand;
 use MongoDB\Operation\DropDatabase;
 use MongoDB\Operation\ListDatabaseNames;
 use MongoDB\Operation\ListDatabases;
 use MongoDB\Operation\Watch;
 use stdClass;
-use Stringable;
 use Throwable;
 
 use function array_diff_key;
 use function is_array;
 use function is_string;
+use function sprintf;
+use function trigger_error;
 
-class Client implements Stringable
+use const E_USER_DEPRECATED;
+
+class Client
 {
     public const DEFAULT_URI = 'mongodb://127.0.0.1/';
 
@@ -150,8 +150,9 @@ class Client implements Stringable
      * Return internal properties for debugging purposes.
      *
      * @see https://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @return array
      */
-    public function __debugInfo(): array
+    public function __debugInfo()
     {
         return [
             'manager' => $this->manager,
@@ -172,16 +173,19 @@ class Client implements Stringable
      * @see https://php.net/oop5.overloading#object.get
      * @see https://php.net/types.string#language.types.string.parsing.complex
      * @param string $databaseName Name of the database to select
+     * @return Database
      */
-    public function __get(string $databaseName): Database
+    public function __get(string $databaseName)
     {
         return $this->getDatabase($databaseName);
     }
 
     /**
      * Return the connection string (i.e. URI).
+     *
+     * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->uri;
     }
@@ -197,37 +201,13 @@ class Client implements Stringable
     }
 
     /**
-     * Executes multiple write operations across multiple namespaces.
-     *
-     * @param BulkWriteCommand|ClientBulkWrite $bulk    Assembled bulk write command or builder
-     * @param array                            $options Additional options
-     * @throws UnsupportedException if options are unsupported on the selected server
-     * @throws InvalidArgumentException for parameter/option parsing errors
-     * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
-     * @see ClientBulkWriteCommand::__construct() for supported options
-     */
-    public function bulkWrite(BulkWriteCommand|ClientBulkWrite $bulk, array $options = []): BulkWriteCommandResult
-    {
-        if (! isset($options['writeConcern']) && ! is_in_transaction($options)) {
-            $options['writeConcern'] = $this->writeConcern;
-        }
-
-        if ($bulk instanceof ClientBulkWrite) {
-            $bulk = $bulk->bulkWriteCommand;
-        }
-
-        $operation = new ClientBulkWriteCommand($bulk, $options);
-        $server = select_server_for_write($this->manager, $options);
-
-        return $operation->execute($server);
-    }
-
-    /**
      * Returns a ClientEncryption instance for explicit encryption and decryption
      *
      * @param array $options Encryption options
+     *
+     * @return ClientEncryption
      */
-    public function createClientEncryption(array $options): ClientEncryption
+    public function createClientEncryption(array $options)
     {
         $options = $this->prepareEncryptionOptions($options);
 
@@ -240,12 +220,19 @@ class Client implements Stringable
      * @see DropDatabase::__construct() for supported options
      * @param string $databaseName Database name
      * @param array  $options      Additional options
+     * @return array|object Command result document
      * @throws UnsupportedException if options are unsupported on the selected server
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function dropDatabase(string $databaseName, array $options = []): void
+    public function dropDatabase(string $databaseName, array $options = [])
     {
+        if (! isset($options['typeMap'])) {
+            $options['typeMap'] = $this->typeMap;
+        } else {
+            @trigger_error(sprintf('The function %s() will return nothing in mongodb/mongodb v2.0, the "typeMap" option is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+        }
+
         $server = select_server_for_write($this->manager, $options);
 
         if (! isset($options['writeConcern']) && ! is_in_transaction($options)) {
@@ -254,7 +241,7 @@ class Client implements Stringable
 
         $operation = new DropDatabase($databaseName, $options);
 
-        $operation->execute($server);
+        return $operation->execute($server);
     }
 
     /**
@@ -290,8 +277,10 @@ class Client implements Stringable
 
     /**
      * Return the Manager.
+     *
+     * @return Manager
      */
-    public function getManager(): Manager
+    public function getManager()
     {
         return $this->manager;
     }
@@ -300,24 +289,29 @@ class Client implements Stringable
      * Return the read concern for this client.
      *
      * @see https://php.net/manual/en/mongodb-driver-readconcern.isdefault.php
+     * @return ReadConcern
      */
-    public function getReadConcern(): ReadConcern
+    public function getReadConcern()
     {
         return $this->readConcern;
     }
 
     /**
      * Return the read preference for this client.
+     *
+     * @return ReadPreference
      */
-    public function getReadPreference(): ReadPreference
+    public function getReadPreference()
     {
         return $this->readPreference;
     }
 
     /**
      * Return the type map for this client.
+     *
+     * @return array
      */
-    public function getTypeMap(): array
+    public function getTypeMap()
     {
         return $this->typeMap;
     }
@@ -326,8 +320,9 @@ class Client implements Stringable
      * Return the write concern for this client.
      *
      * @see https://php.net/manual/en/mongodb-driver-writeconcern.isdefault.php
+     * @return WriteConcern
      */
-    public function getWriteConcern(): WriteConcern
+    public function getWriteConcern()
     {
         return $this->writeConcern;
     }
@@ -336,7 +331,6 @@ class Client implements Stringable
      * List database names.
      *
      * @see ListDatabaseNames::__construct() for supported options
-     * @return Iterator<int, string>
      * @throws UnexpectedValueException if the command response was malformed
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
@@ -358,7 +352,7 @@ class Client implements Stringable
      * @throws InvalidArgumentException for parameter/option parsing errors
      * @throws DriverRuntimeException for other driver errors (e.g. connection errors)
      */
-    public function listDatabases(array $options = []): Iterator
+    public function listDatabases(array $options = [])
     {
         $operation = new ListDatabases($options);
         $server = select_server($this->manager, $options);
@@ -383,9 +377,10 @@ class Client implements Stringable
      * @param string $databaseName   Name of the database containing the collection
      * @param string $collectionName Name of the collection to select
      * @param array  $options        Collection constructor options
+     * @return Collection
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function selectCollection(string $databaseName, string $collectionName, array $options = []): Collection
+    public function selectCollection(string $databaseName, string $collectionName, array $options = [])
     {
         return $this->getCollection($databaseName, $collectionName, $options);
     }
@@ -396,9 +391,10 @@ class Client implements Stringable
      * @see Database::__construct() for supported options
      * @param string $databaseName Name of the database to select
      * @param array  $options      Database constructor options
+     * @return Database
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function selectDatabase(string $databaseName, array $options = []): Database
+    public function selectDatabase(string $databaseName, array $options = [])
     {
         return $this->getDatabase($databaseName, $options);
     }
@@ -408,8 +404,9 @@ class Client implements Stringable
      *
      * @see https://php.net/manual/en/mongodb-driver-manager.startsession.php
      * @param array $options Session options
+     * @return Session
      */
-    public function startSession(array $options = []): Session
+    public function startSession(array $options = [])
     {
         return $this->manager->startSession($options);
     }
@@ -420,9 +417,10 @@ class Client implements Stringable
      * @see Watch::__construct() for supported options
      * @param array $pipeline Aggregation pipeline
      * @param array $options  Command options
+     * @return ChangeStream
      * @throws InvalidArgumentException for parameter/option parsing errors
      */
-    public function watch(array $pipeline = [], array $options = []): ChangeStream
+    public function watch(array $pipeline = [], array $options = [])
     {
         if (is_builder_pipeline($pipeline)) {
             $pipeline = new Pipeline(...$pipeline);
