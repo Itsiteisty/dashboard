@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__ . '/../database/db.php';
+require_once __DIR__ . '/../../database/db.php';
+
+use MongoDB\Driver\Exception\Exception;
 
 class FormController
 {
@@ -8,7 +10,10 @@ class FormController
     public function __construct()
     {
         global $db;
-        $this->collection = $db->selectCollection('staff');
+        if (!$db) {
+            throw new Exception("MongoDB Database não definido.");
+        }
+        $this->collection = $db->selectCollection('staff_form');
     }
 
     public function submit(array $data): array
@@ -17,13 +22,24 @@ class FormController
             return ['success' => false, 'message' => 'Name, Discord, and Age are required.'];
         }
 
+        $data['submitted_at'] = time();
+        $data['ip'] = $_SERVER['REMOTE_ADDR'] ?? 'IP não encontrado';
+
         try {
             $result = $this->collection->insertOne($data);
-            return [
-                'success' => (bool)$result->getInsertedId(),
-                'message' => $result->getInsertedId() ? 'Application submitted successfully.' : 'Failed to submit application.'
-            ];
-        } catch (MongoDB\Driver\Exception\Exception $e) {
+
+            if ($result->getInsertedId()) {
+                error_log("Nova submissão de formulário:");
+                error_log("ID: " . (string)$result->getInsertedId());
+                error_log("Nome: " . $data['name']);
+                error_log("Discord: " . $data['discord']);
+                error_log("IP: " . $data['ip']);
+
+                return ['success' => true, 'message' => 'Application submitted successfully.'];
+            } else {
+                return ['success' => false, 'message' => 'Falha ao inserir no MongoDB.'];
+            }
+        } catch (Exception $e) {
             return ['success' => false, 'message' => 'MongoDB Error: ' . $e->getMessage()];
         }
     }
