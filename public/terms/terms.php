@@ -14,9 +14,9 @@ if (isset($_POST['accept'])) {
 </head>
 <body>
     <div class="terms-box">
-        <h1>Staff Terms & Responsibilities – [Server Name]</h1>
+        <h1>Staff Terms & Responsibilities – Femboy & Furry Palace</h1>
         <div class="terms-content">
-            <p>Welcome to the staff application process for [Server Name]. By applying, you agree to comply with all rules, responsibilities, and guidelines listed below. The server administration reserves the right to enforce sanctions, including removal from the team, if any term is violated.</p>
+            <p>Welcome to the staff application process for Femboy & Furry Palace. By applying, you agree to comply with all rules, responsibilities, and guidelines listed below. The server administration reserves the right to enforce sanctions, including removal from the team, if any term is violated.</p>
 
             <h2>1. Conduct & Behavior</h2>
             <ul>
