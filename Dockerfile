@@ -1,35 +1,37 @@
-# Stage 0: Base PHP + Apache
+# Use a imagem oficial do PHP com Apache
 FROM php:8.3-apache
 
-# Instala dependências do sistema
+# Set working directory
+WORKDIR /var/www/html
+
+# Atualiza e instala dependências do sistema
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    libzip-dev \
     libssl-dev \
-    && docker-php-ext-install zip
+    libcurl4-openssl-dev \
+    pkg-config \
+    libz-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instala o driver MongoDB compatível com PHP
-RUN pecl install mongodb-1.21.3 \
+# Instala o driver MongoDB 2.1.4
+RUN pecl install mongodb-2.1.4 \
     && docker-php-ext-enable mongodb
 
-# Ativa módulos do Apache
+# Habilita mod_rewrite do Apache
 RUN a2enmod rewrite
 
-# Define diretório de trabalho
-WORKDIR /var/www/html
-
-# Copia os arquivos do projeto
+# Copia os arquivos do projeto para o container
 COPY . .
 
-# Instala o Composer
+# Copia o Composer do container oficial do Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Instala dependências do Composer (ignora plataforma se necessário)
+# Instala as dependências do Composer
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-mongodb
 
 # Expõe a porta 80
 EXPOSE 80
 
-# Comando para rodar o Apache em foreground
+# Comando para iniciar o Apache em primeiro plano
 CMD ["apache2-foreground"]
