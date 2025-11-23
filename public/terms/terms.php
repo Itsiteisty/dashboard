@@ -89,7 +89,8 @@ if (isset($_POST['accept'])) {
                 <li>You have read and understood all terms above.</li>
                 <li>You are aware of the responsibilities of being a staff member.</li>
                 <li>You agree to follow the server rules and guidelines.</li>
-                <li>You understand that violations may result in removal from staff and further penalties.</li>
+                <li>You understa
+                    nd that violations may result in removal from staff and further penalties.</li>
             </ul>
         </div>
         <form method="POST">
