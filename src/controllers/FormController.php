@@ -13,15 +13,18 @@ class FormController
 
     public function submit(array $data): array
     {
+        if (empty($data['name']) || empty($data['discord']) || empty($data['age'])) {
+            return ['success' => false, 'message' => 'Name, Discord, and Age are required.'];
+        }
+
         try {
             $result = $this->collection->insertOne($data);
-            if ($result->getInsertedId()) {
-                return ['success' => true, 'message' => 'Application submitted successfully.'];
-            } else {
-                return ['success' => false, 'message' => 'Failed to submit application.'];
-            }
-        } catch (Exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
+            return [
+                'success' => (bool)$result->getInsertedId(),
+                'message' => $result->getInsertedId() ? 'Application submitted successfully.' : 'Failed to submit application.'
+            ];
+        } catch (MongoDB\Driver\Exception\Exception $e) {
+            return ['success' => false, 'message' => 'MongoDB Error: ' . $e->getMessage()];
         }
     }
 }
