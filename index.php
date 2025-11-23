@@ -1,20 +1,20 @@
 <?php
-// Redireciona para a página de login automaticamente após 3 segundos
+// Automatically redirect to the login page after 5 seconds
 header("Refresh: 5; url=/public/terms/terms.php");
 ?>
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Iniciando...</title>
+    <title>Starting...</title>
     <link rel="stylesheet" href="/public/assets/css/style.css">
 </head>
 <body>
     <div class="box">
-        <h2>Carregando Sistema...</h2>
-        <p>Você será redirecionado para a página de entrada.</p>
+        <h2>Loading System...</h2>
+        <p>You will be redirected to the login page shortly.</p>
         <div class="loader"></div>
-        <div class="glow-text">⚡ Prepare-se! ⚡</div>
+        <div class="glow-text">⚡ Get Ready! ⚡</div>
     </div>
 </body>
 </html>
