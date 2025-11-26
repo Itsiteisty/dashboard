@@ -1,5 +1,14 @@
 <?php
-require_once __DIR__ . '/../../database/db.php';
+// Caminho esperado para o db.php
+$dbPath = __DIR__ . '/../../database/db.php';
+
+// Verifica se o arquivo existe antes de incluir
+if (!file_exists($dbPath)) {
+    die("Erro: arquivo db.php não encontrado em $dbPath");
+}
+
+// Inclui o arquivo
+require_once $dbPath;
 
 use MongoDB\Driver\Exception\Exception;
 
@@ -44,3 +53,4 @@ class FormController
         }
     }
 }
+
