@@ -1,6 +1,6 @@
 <?php
 // Caminho esperado para o db.php
-$dbPath = __DIR__ . '/../../database/db.php';
+require_once __DIR__ . '/../database/db.php';
 
 // Verifica se o arquivo existe antes de incluir
 if (!file_exists($dbPath)) {
