@@ -20,3 +20,4 @@ try {
 } catch (Exception $e) {
     die("Erro ao conectar no MongoDB: " . $e->getMessage());
 }
+
